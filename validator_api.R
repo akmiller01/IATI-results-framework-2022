@@ -37,6 +37,7 @@ req = GET(
   add_headers(`x-functions-key` = api_key)
 )
 all_messages=content(req)
+all_messages = subset(all_messages, count > 0)
 
 summary_endpoint = paste0(base_url,"/pub/stats/summary_aggregate?date=2022-01-13&format=csv")
 
