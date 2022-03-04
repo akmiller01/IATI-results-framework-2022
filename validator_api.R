@@ -30,7 +30,7 @@ api_key = Sys.getenv("VALIDATOR_KEY")
 
 base_url = "https://func-validator-services-prod.azurewebsites.net/api"
 
-message_endpoint = paste0(base_url,"/pub/stats/all?date=2022-01-13&format=csv")
+message_endpoint = paste0(base_url,"/pub/stats/all?date=2022-03-04&format=csv")
 
 req = GET(
   URLencode(message_endpoint),
@@ -39,7 +39,7 @@ req = GET(
 all_messages=content(req)
 all_messages = subset(all_messages, count > 0)
 
-summary_endpoint = paste0(base_url,"/pub/stats/summary_aggregate?date=2022-01-13&format=csv")
+summary_endpoint = paste0(base_url,"/pub/stats/summary_aggregate?date=2022-03-04&format=csv")
 
 req = GET(
   URLencode(summary_endpoint),
@@ -48,10 +48,12 @@ req = GET(
 all_summary=content(req)
 
 all_messages = all_messages[order(all_messages$publisher_name),]
+all_messages = subset(all_messages,publisher_name!="null")
 all_messages = merge(all_messages, org_cat_max, by="publisher_name", all.x=T)
 all_messages$spend_category[which(is.na(all_messages$spend_category))] = "No spend data for 2019-2021"
 
 all_summary = merge(all_summary, org_cat_max, by="publisher_name", all.x=T)
+all_summary = subset(all_summary,publisher_name!="null")
 all_summary$spend_category[which(is.na(all_summary$spend_category))] = "No spend data for 2019-2021"
-fwrite(all_messages,"all_messages.csv")
-fwrite(all_summary,"all_summaries.csv")
+fwrite(all_messages,"all_messages_20220304_tripleyear.csv")
+fwrite(all_summary,"all_summaries_20220304_tripleyear.csv")
